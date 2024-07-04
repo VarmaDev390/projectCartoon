@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const sendMsgToAI = async (msg) => {
   const API_URL = "https://api.openai.com/v1/completions";
 
@@ -19,6 +21,26 @@ export const sendMsgToAI = async (msg) => {
   try {
     const response = await (await fetch(API_URL, requestOptions)).json();
     return response?.choices[0]?.text;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const callExternalAPI = async (url, method, body) => {
+  let config = {
+    method: method,
+    maxBodyLength: Infinity,
+    url: url,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+  };
+  try {
+    let response = await axios.request(config);
+    console.log("response", response);
+
+    return response;
   } catch (error) {
     console.log(error);
   }

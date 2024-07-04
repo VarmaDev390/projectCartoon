@@ -10,17 +10,17 @@ function Chat() {
           <span
             key={i}
             className={
-              msg.isBot
+              msg.role === "assistant"
                 ? "flex items-start justify-center gap-2 lg:gap-5 my-2 bg-gray-800/80 p-3 rounded-md "
                 : "flex items-start justify-center gap-2 lg:gap-5 my-2 p-3"
             }
           >
             <img
-              src={msg.isBot ? "/icon.png" : "/user.jpeg"}
+              src={msg.role === "assistant" ? "/icon.png" : "/user.jpeg"}
               alt="user"
               className="w-10 h-10 rounded object-cover"
             />
-            <p className="text-white text-[15px]">{msg?.text}</p>
+            <p className="text-white text-[15px]">{msg?.content}</p>
           </span>
         ))}
         <div ref={msgEnd} />

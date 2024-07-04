@@ -31,25 +31,152 @@ pool.connect((err) => {
 });
 
 const cartoonApp = express();
-const PORT = 3000;
+const PORT = 3001;
 
-cartoonApp.use(bodyParser.json());
+cartoonApp.use(express.json());
 cartoonApp.use(cors());
+// cartoonApp.use(cors({ origin: "http://localhost:3000" }));
+
 // cartoonApp.use("/", chatBotAI);
 
 //endpoint for new chat
-cartoonApp.get("/chat", async (req, res) => {
+// cartoonApp.get("/chat", async (req, res) => {
+//   // create a new sessionId
+//   const sessionId = uuidv4();
+//   // define the role and context for your chatbot
+//   let messagesArr = [
+//     {
+//       role: "system",
+//       content: "Act as an expert based on the knowledge of cartoon characters",
+//     },
+//   ];
+
+//   let [collectedContent, role] = ["", ""];
+//   try {
+//     const stream = await callGPT(openai, messagesArr);
+//     // after getting the data as stream we add all the chunks to a single string
+//     for await (const chunk of stream) {
+//       if (chunk.choices[0].delta.role) role = chunk.choices[0].delta.role;
+//       if (chunk.choices[0]?.delta?.content) {
+//         collectedContent += chunk.choices[0].delta.content;
+//         res.write(chunk.choices[0].delta.content || "");
+//         console.log(chunk.choices[0].delta);
+//       }
+//     }
+//     // adding the collected chuncks and role as an object for saving it to db
+//     messagesArr.push({
+//       role: role,
+//       content: collectedContent,
+//     });
+
+//     // store the chat history in the db
+//     try {
+//       const query =
+//         "INSERT INTO chatData (sessionId, chatHistory) VALUES (?, ?)";
+//       pool.query(query, [sessionId, messagesArr], (err, result) => {
+//         if (err) {
+//           console.error("Error inserting data:", err);
+//         } else {
+//           console.log("Data inserted successfully:", result);
+//           res.end();
+//         }
+//       });
+//     } catch (err) {
+//       console.error("Error during query execution:", err);
+//     }
+//   } catch (err) {
+//     console.error("Error during GPT stream processing:", err);
+//   }
+//   console.log("messagesArr", messagesArr);
+//   res.end();
+// });
+
+// clicks on newchat with stream
+// cartoonApp.post("/chat", async (req, res) => {
+//   // create a new sessionId
+//   const sessionId = uuidv4();
+//   const message = req.body.message;
+//   console.log("message", message);
+//   // define the role and context for your chatbot
+//   let messagesArr = [
+//     {
+//       role: "system",
+//       content: "Act as an expert based on the knowledge of cartoon characters",
+//     },
+//     {
+//       role: "user",
+//       content: message,
+//     },
+//   ];
+
+//   let [collectedContent, role] = ["", ""];
+//   const headers = {
+//     "Content-Type": "text/event-stream",
+//     Connection: "keep-alive",
+//     "Cache-Control": "no-cache",
+//   };
+//   res.writeHead(200, headers);
+//   res.write(`event: sessionId\n data: ${sessionId}\n\n`);
+//   try {
+//     const stream = await callGPT(openai, messagesArr);
+//     // after getting the data as stream we add all the chunks to a single string
+//     for await (const chunk of stream) {
+//       if (chunk.choices[0].delta.role) role = chunk.choices[0].delta.role;
+//       if (chunk.choices[0]?.delta?.content) {
+//         collectedContent += chunk.choices[0].delta.content;
+//         res.write(`data: ${chunk.choices[0].delta.content || ""}\n\n`);
+//         // console.log(chunk.choices[0].delta);
+//       }
+//     }
+//     // adding the collected chuncks and role as an object for saving it to db
+//     messagesArr.push({
+//       role: role,
+//       content: collectedContent,
+//     });
+
+//     // store the chat history in the db
+
+//     const query = "INSERT INTO chatData (sessionId, chatHistory) VALUES (?, ?)";
+//     pool.query(
+//       query,
+//       [sessionId, JSON.stringify(messagesArr)],
+//       (err, result) => {
+//         if (err) {
+//           console.error("Error inserting data:", err);
+//           res.status(500).json({ error: "Error storing chat data" });
+//         } else {
+//           console.log("Data inserted successfully:", result);
+//           res.end();
+//         }
+//       }
+//     );
+//   } catch (err) {
+//     console.error("Error during query execution:", err);
+//     res.status(500).json({ error: "Error during query execution" });
+//   }
+
+//   console.log("messagesArr", messagesArr);
+// });
+
+cartoonApp.post("/chat", async (req, res) => {
   // create a new sessionId
   const sessionId = uuidv4();
+  const message = req.body.message;
+  console.log("message", message);
   // define the role and context for your chatbot
   let messagesArr = [
     {
       role: "system",
       content: "Act as an expert based on the knowledge of cartoon characters",
     },
+    {
+      role: "user",
+      content: message,
+    },
   ];
 
   let [collectedContent, role] = ["", ""];
+
   try {
     const stream = await callGPT(openai, messagesArr);
     // after getting the data as stream we add all the chunks to a single string
@@ -58,7 +185,7 @@ cartoonApp.get("/chat", async (req, res) => {
       if (chunk.choices[0]?.delta?.content) {
         collectedContent += chunk.choices[0].delta.content;
         res.write(chunk.choices[0].delta.content || "");
-        console.log(chunk.choices[0].delta);
+        // console.log(chunk.choices[0].delta);
       }
     }
     // adding the collected chuncks and role as an object for saving it to db
@@ -68,29 +195,88 @@ cartoonApp.get("/chat", async (req, res) => {
     });
 
     // store the chat history in the db
-    try {
-      const query =
-        "INSERT INTO chatData (sessionId, chatHistory) VALUES (?, ?)";
-      pool.query(query, [sessionId, messagesArr], (err, result) => {
+
+    const query = "INSERT INTO chatData (sessionId, chatHistory) VALUES (?, ?)";
+    pool.query(
+      query,
+      [sessionId, JSON.stringify(messagesArr)],
+      (err, result) => {
         if (err) {
           console.error("Error inserting data:", err);
+          res.status(500).json({ error: "Error storing chat data" });
         } else {
           console.log("Data inserted successfully:", result);
           res.end();
         }
-      });
-    } catch (err) {
-      console.error("Error during query execution:", err);
-    }
+      }
+    );
   } catch (err) {
-    console.error("Error during GPT stream processing:", err);
+    console.error("Error during query execution:", err);
+    res.status(500).json({ error: "Error during query execution" });
   }
+
   console.log("messagesArr", messagesArr);
-  res.end();
+});
+// clicks on newchat for getting only sessionId
+// cartoonApp.post("/chat", async (req, res) => {
+//   // create a new sessionId
+//   console.log("inside caht server");
+//   const message = req.body.message;
+//   console.log("message", message);
+//   const sessionId = uuidv4();
+//   // define the role and context for your chatbot
+//   let messagesArr = [
+//     {
+//       role: "system",
+//       content: "Act as an expert based on the knowledge of cartoon characters",
+//     },
+//     {
+//       role: "user",
+//       content: message,
+//     },
+//   ];
+//   // store the chat history in the db
+
+//   const query = "INSERT INTO chatData (sessionId, chatHistory) VALUES (?, ?)";
+//   pool.query(query, [sessionId, JSON.stringify(messagesArr)], (err, result) => {
+//     if (err) {
+//       console.error("Error inserting data:", err);
+//       res.status(500).json({ error: "Error storing chat data" });
+//     } else {
+//       console.log("Data inserted successfully:", result);
+//       res.json({ sessionId });
+//     }
+//   });
+// });
+
+// getting the history of old chats
+cartoonApp.get("/chat/:sessionId", async (req, res) => {
+  const sessionId = req.params.sessionId.slice(1);
+  console.log("sessionId", sessionId);
+
+  try {
+    let chatHistory = [];
+
+    const query = `SELECT chatHistory FROM chatData WHERE sessionId = ?`;
+    pool.query(query, [sessionId], async (err, result) => {
+      if (result.length > 0 && result[0].chatHistory) {
+        console.log("has history", result);
+
+        chatHistory = JSON.parse(result[0].chatHistory);
+        console.log("chatHistory", chatHistory);
+
+        res.json(chatHistory);
+      } else {
+        return res.status(404).json({ error: "No chat history found" });
+      }
+    });
+  } catch (error) {
+    console.log("Error in querying", error);
+    return res.status(500).json({ error: "Error in querying" });
+  }
 });
 
-//endpoint for accessing old chats
-///chat/:sessionId/messages
+//endpoint for chating with old chats
 // cartoonApp.post("/chat/:sessionId", async (req, res) => {
 //   const sessionId = req.params.sessionId.slice(1);
 //   console.log("sessionId", sessionId);
@@ -232,12 +418,6 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
   try {
     const query = `SELECT chatHistory FROM chatData WHERE sessionId = ?`;
     pool.query(query, [sessionId], async (err, result) => {
-      if (err) {
-        console.error("Error retreving data:", err);
-        return;
-      }
-      console.log("result", result);
-
       if (result.length > 0 && result[0].chatHistory) {
         console.log("has history");
 
@@ -248,34 +428,28 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
             content: message,
           },
         ];
-      } else if (result.length === 0) {
-        console.log("no history");
-
-        conversationObj = [
-          {
-            role: "system",
-            content:
-              "Act as an expert based on the knowledge of cartoon characters",
-          },
-          {
-            role: "user",
-            content: message,
-          },
-        ];
+      } else {
+        return res.status(404).json({ error: "No chat history found" });
       }
 
       chatHistory.push(...conversationObj);
 
       let [collectedContent, role] = ["", ""];
-
+      const headers = {
+        "Content-Type": "text/event-stream",
+        Connection: "keep-alive",
+        "Cache-Control": "no-cache",
+      };
+      res.writeHead(200, headers);
+      res.write(`event: chatHistory\n data: ${chatHistory}\n\n`);
       const stream = await callGPT(openai, chatHistory);
       // after getting the data as stream we add all the chunks to a single string
       for await (const chunk of stream) {
         if (chunk.choices[0].delta.role) role = chunk.choices[0].delta.role;
         if (chunk.choices[0]?.delta?.content) {
           collectedContent += chunk.choices[0].delta.content;
-          res.write(chunk.choices[0].delta.content || "");
-          // console.log(chunk.choices[0].delta);
+          res.write(`data: ${chunk.choices[0].delta.content || ""}\n\n`);
+          console.log(chunk.choices[0].delta);
         }
       }
       chatHistory.push({
@@ -284,10 +458,9 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
       });
       console.log("chatHistory", chatHistory);
 
-      const insertQuery = `INSERT INTO chatData (sessionId, chatHistory) VALUES (?, ?)`;
       const updateQuery = `UPDATE chatData SET chatHistory = ? WHERE sessionId = ?`;
       pool.query(
-        result.length === 0 ? insertQuery : updateQuery,
+        updateQuery,
         [sessionId, JSON.stringify(chatHistory)],
         (err) => {
           if (err) {
@@ -304,6 +477,7 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
     console.error("Error during query execution:", err);
   }
 });
+
 cartoonApp.listen(PORT, () =>
-  console.log("Example app is listening on port 3000.")
+  console.log("Example app is listening on port 3001.")
 );
