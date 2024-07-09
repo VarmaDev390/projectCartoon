@@ -27,17 +27,14 @@ export const sendMsgToAI = async (msg) => {
 };
 
 export const callExternalAPI = async (url, method, body) => {
-  let config = {
-    method: method,
-    maxBodyLength: Infinity,
-    url: url,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: body,
-  };
   try {
-    let response = await axios.request(config);
+    let response = await fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
     console.log("response", response);
 
     return response;

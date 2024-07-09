@@ -178,6 +178,8 @@ cartoonApp.post("/chat", async (req, res) => {
   let [collectedContent, role] = ["", ""];
 
   try {
+    res.write(JSON.stringify({ sessionId }));
+
     const stream = await callGPT(openai, messagesArr);
     // after getting the data as stream we add all the chunks to a single string
     for await (const chunk of stream) {
@@ -433,23 +435,18 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
       }
 
       chatHistory.push(...conversationObj);
+      // console.log("chatHistory", chatHistory);
 
       let [collectedContent, role] = ["", ""];
-      const headers = {
-        "Content-Type": "text/event-stream",
-        Connection: "keep-alive",
-        "Cache-Control": "no-cache",
-      };
-      res.writeHead(200, headers);
-      res.write(`event: chatHistory\n data: ${chatHistory}\n\n`);
+
       const stream = await callGPT(openai, chatHistory);
       // after getting the data as stream we add all the chunks to a single string
       for await (const chunk of stream) {
         if (chunk.choices[0].delta.role) role = chunk.choices[0].delta.role;
         if (chunk.choices[0]?.delta?.content) {
           collectedContent += chunk.choices[0].delta.content;
-          res.write(`data: ${chunk.choices[0].delta.content || ""}\n\n`);
-          console.log(chunk.choices[0].delta);
+          res.write(chunk.choices[0].delta.content || "");
+          // console.log(chunk.choices[0].delta);
         }
       }
       chatHistory.push({
@@ -461,20 +458,42 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
       const updateQuery = `UPDATE chatData SET chatHistory = ? WHERE sessionId = ?`;
       pool.query(
         updateQuery,
-        [sessionId, JSON.stringify(chatHistory)],
+        [JSON.stringify(chatHistory), sessionId],
         (err) => {
           if (err) {
             console.error("Error inserting chat history:", err);
+            res.status(500).json({ error: "Error storing chat data" });
           } else {
-            console.log("Chat history created successfully.");
+            console.log("Chat history updated successfully.");
+            res.end();
           }
         }
       );
-
-      res.end();
     });
   } catch (err) {
     console.error("Error during query execution:", err);
+    res.status(500).json({ error: "Error during query execution" });
+  }
+});
+
+cartoonApp.get("/chats", async (req, res) => {
+  try {
+    const query =
+      "SELECT sessionId, chatHistory FROM chatData ORDER BY updated_at DESC";
+    pool.query(query, (err, results) => {
+      if (err) {
+        console.error("Error fetching chat sessions:", err);
+        return res.status(500).json({ error: "Error fetching chat sessions" });
+      }
+      const sessions = results.map((row) => ({
+        sessionId: row.sessionId,
+        chatHistory: JSON.parse(row.chatHistory),
+      }));
+      res.json(sessions);
+    });
+  } catch (error) {
+    console.log("Error in querying", error);
+    return res.status(500).json({ error: "Error in querying" });
   }
 });
 

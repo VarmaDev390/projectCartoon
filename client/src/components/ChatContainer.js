@@ -4,6 +4,10 @@ import { LuPanelLeftOpen } from "react-icons/lu";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import Chat from "./Chat";
+import { useNavigate } from "react-router-dom";
+import { callExternalAPI } from "../utils/OpenAi";
+import { fetchSessions } from "./Helpers";
+
 function ChatContainer() {
   const {
     setShowSlide,
@@ -12,9 +16,91 @@ function ChatContainer() {
     Mobile,
     chatValue,
     setChatValue,
-    handleSend,
-    handleKeyPress,
+    setMessage,
+    message,
+    setSessionId,
+    sessionId,
+    sessions,
+    setSessions,
+    // handleKeyPress,
+    // handleSend,
   } = useContext(ContextApp);
+  const navigate = useNavigate();
+  console.log("Session ID:", sessionId);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
+  };
+
+  const handleSend = async () => {
+    console.log("inside handlesend");
+    console.log("Session ID:", sessionId);
+
+    const text = chatValue;
+    setChatValue("");
+    setMessage([...message, { content: text, role: "user" }]);
+    let url = "";
+    let tempSessionId = "";
+    if (!sessionId) {
+      url = "http://localhost:3001/chat";
+    } else {
+      url = `http://localhost:3001/chat/:${sessionId}`;
+    }
+    try {
+      const response = await callExternalAPI(url, "POST", { message: text });
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+      const reader = response.body.getReader();
+      let receivedText = "";
+      let done = false;
+      if (!sessionId) {
+        const { value: initialChunk, done: initialDone } = await reader.read();
+        if (initialDone) {
+          throw new Error("No initial chunk received");
+        }
+
+        const initialText = new TextDecoder().decode(initialChunk);
+        const initialData = JSON.parse(initialText);
+        tempSessionId = initialData.sessionId;
+        await setSessionId(initialData.sessionId);
+        console.log("Session ID:", initialData.sessionId);
+      }
+
+      setMessage((prevMessages) => [
+        ...prevMessages,
+        { content: "", role: "assistant" },
+      ]);
+
+      while (!done) {
+        const { value, done: streamDone } = await reader.read();
+        if (value) {
+          const chunk = new TextDecoder().decode(value);
+          receivedText += chunk;
+
+          setMessage((prevMessages) => {
+            const lastMessageIndex = prevMessages.length - 1;
+            const updatedMessages = [...prevMessages];
+            updatedMessages[lastMessageIndex] = {
+              ...updatedMessages[lastMessageIndex],
+              content: receivedText,
+            };
+            return updatedMessages;
+          });
+        }
+        done = streamDone;
+      }
+      if (!sessionId) {
+        navigate(`/chat/:${tempSessionId}`);
+      }
+      const data = await fetchSessions();
+      setSessions(data);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
 
   return (
     <div
