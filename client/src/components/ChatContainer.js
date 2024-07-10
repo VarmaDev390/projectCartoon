@@ -20,7 +20,6 @@ function ChatContainer() {
     message,
     setSessionId,
     sessionId,
-    sessions,
     setSessions,
     // handleKeyPress,
     // handleSend,
