@@ -21,8 +21,6 @@ function ChatContainer() {
     setSessionId,
     sessionId,
     setSessions,
-    // handleKeyPress,
-    // handleSend,
   } = useContext(ContextApp);
   const navigate = useNavigate();
   console.log("Session ID:", sessionId);
@@ -42,10 +40,11 @@ function ChatContainer() {
     setMessage([...message, { content: text, role: "user" }]);
     let url = "";
     let tempSessionId = "";
+    const baseUrl = process.env.REACT_APP_CHAT_API_URL;
     if (!sessionId) {
-      url = "http://localhost:3001/chat";
+      url = `${baseUrl}/chat`;
     } else {
-      url = `http://localhost:3001/chat/:${sessionId}`;
+      url = `${baseUrl}/chat/:${sessionId}`;
     }
     try {
       const response = await callExternalAPI(url, "POST", { message: text });

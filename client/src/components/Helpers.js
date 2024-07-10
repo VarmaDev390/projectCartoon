@@ -14,7 +14,8 @@ import axios from "axios";
 
 export const fetchSessions = async () => {
   try {
-    let response = await axios.get("http://localhost:3001/chats");
+    const baseUrl = process.env.REACT_APP_CHAT_API_URL;
+    let response = await axios.get(`${baseUrl}/chats`);
     return response.data;
   } catch (err) {
     console.error("Error fetching chat sessions:", err);
