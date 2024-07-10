@@ -9,15 +9,8 @@ import { fetchSessions } from "./Helpers.js";
 import axios from "axios";
 
 function Mobile() {
-  const {
-    Mobile,
-    setMobile,
-
-    setSessionId,
-    setMessage,
-    setSessions,
-    sessions,
-  } = useContext(ContextApp);
+  const { Mobile, setMobile, setSessionId, setMessage, setSessions, sessions } =
+    useContext(ContextApp);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,16 +24,16 @@ function Mobile() {
     };
 
     handleFetchSessions();
-  });
+  }, []);
 
   const handleSessionClick = (sessionId) => {
     setSessionId(sessionId);
 
     // console.log("sessionId", sessionId);
-
+    const baseUrl = process.env.REACT_APP_API;
     // Fetch the session messages from the backend
     axios
-      .get(`http://localhost:3001/chat/:${sessionId}`)
+      .get(`${baseUrl}/chat/:${sessionId}`)
       .then((response) => {
         console.log("sessiondata", response.data);
         setMessage(response.data);

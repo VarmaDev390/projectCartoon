@@ -25,6 +25,16 @@ const pool = mysql.createConnection({
   queueLimit: 0,
 });
 
+// const pool = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "root",
+//   database: "project_cartoon",
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
+
 pool.connect((err) => {
   if (err) {
     console.error("Error connecting to the database:", err);
@@ -34,7 +44,7 @@ pool.connect((err) => {
 });
 
 const cartoonApp = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 cartoonApp.use(bodyParser.json());
 cartoonApp.use(cors());

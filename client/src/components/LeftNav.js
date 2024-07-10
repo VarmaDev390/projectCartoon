@@ -31,7 +31,7 @@ function LeftNav() {
     };
 
     handleFetchSessions();
-  });
+  }, []);
 
   const handleSessionClick = (sessionId) => {
     setSessionId(sessionId);
@@ -39,8 +39,9 @@ function LeftNav() {
     // console.log("sessionId", sessionId);
 
     // Fetch the session messages from the backend
+    const baseUrl = process.env.REACT_APP_API;
     axios
-      .get(`http://localhost:3001/chat/:${sessionId}`)
+      .get(`${baseUrl}/chat/:${sessionId}`)
       .then((response) => {
         console.log("sessiondata", response.data);
         setMessage(response.data);
