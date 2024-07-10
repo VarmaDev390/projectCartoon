@@ -12,8 +12,6 @@
 
 import Home from "./Page/Home";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AppContext from "./utils/Context";
-import TestNavigate from "./components/test";
 
 function App() {
   return (
@@ -21,7 +19,6 @@ function App() {
       <Routes>
         <Route path="/chat/:sessionId" element={<Home />} />
         <Route path="/chat" element={<Home />} />
-        {/* <Route path="/test" element={<TestNavigate />} /> */}
       </Routes>
     </BrowserRouter>
   );
