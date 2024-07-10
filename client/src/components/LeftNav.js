@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { LuPanelLeftClose } from "react-icons/lu";
 import { FiUser, FiMessageSquare } from "react-icons/fi";
@@ -11,7 +11,7 @@ function LeftNav() {
   const {
     setShowSlide,
     showSlide,
-    handleQuery,
+
     setSessionId,
     setMessage,
     setSessions,
@@ -31,7 +31,7 @@ function LeftNav() {
     };
 
     handleFetchSessions();
-  }, []);
+  });
 
   const handleSessionClick = (sessionId) => {
     setSessionId(sessionId);

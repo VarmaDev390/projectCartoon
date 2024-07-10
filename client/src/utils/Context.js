@@ -72,7 +72,7 @@
 // export default AppContext;
 import "event-source";
 import { createContext, useEffect, useRef, useState } from "react";
-import { sendMsgToAI, callExternalAPI } from "./OpenAi";
+import { sendMsgToAI } from "./OpenAi";
 // import { useNavigate } from "react-router-dom";
 
 export const ContextApp = createContext();

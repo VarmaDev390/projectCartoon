@@ -12,7 +12,7 @@ function Mobile() {
   const {
     Mobile,
     setMobile,
-    handleQuery,
+
     setSessionId,
     setMessage,
     setSessions,
@@ -31,7 +31,7 @@ function Mobile() {
     };
 
     handleFetchSessions();
-  }, []);
+  });
 
   const handleSessionClick = (sessionId) => {
     setSessionId(sessionId);
