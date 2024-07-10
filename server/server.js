@@ -33,7 +33,7 @@ pool.connect((err) => {
 const cartoonApp = express();
 const PORT = 3001;
 
-cartoonApp.use(express.json());
+cartoonApp.use(bodyParser.json());
 cartoonApp.use(cors());
 // cartoonApp.use(cors({ origin: "http://localhost:3000" }));
 
