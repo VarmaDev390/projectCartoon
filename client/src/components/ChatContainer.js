@@ -23,7 +23,7 @@ function ChatContainer() {
     setSessions,
   } = useContext(ContextApp);
   const navigate = useNavigate();
-  console.log("Session ID:", sessionId);
+  // console.log("Session ID:", sessionId);
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -40,7 +40,7 @@ function ChatContainer() {
     setMessage([...message, { content: text, role: "user" }]);
     let url = "";
     let tempSessionId = "";
-    const baseUrl = process.env.REACT_APP_CHAT_API_URL;
+    const baseUrl = process.env.REACT_APP_API;
     if (!sessionId) {
       url = `${baseUrl}/chat`;
     } else {

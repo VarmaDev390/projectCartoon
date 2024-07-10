@@ -24,13 +24,13 @@ function Mobile() {
     };
 
     handleFetchSessions();
-  });
+  }, []);
 
   const handleSessionClick = (sessionId) => {
     setSessionId(sessionId);
 
     // console.log("sessionId", sessionId);
-    const baseUrl = process.env.REACT_APP_CHAT_API_URL;
+    const baseUrl = process.env.REACT_APP_API;
     // Fetch the session messages from the backend
     axios
       .get(`${baseUrl}/chat/:${sessionId}`)
