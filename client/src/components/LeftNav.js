@@ -137,13 +137,13 @@ import { useNavigate } from "react-router-dom";
 import { fetchSessions } from "./Helpers.js";
 import axios from "axios";
 
-function LeftNav() {
+function LeftNav({ setMessage }) {
   const {
     setShowSlide,
     showSlide,
 
     setSessionId,
-    setMessage,
+
     setSessions,
     sessions,
   } = useContext(ContextApp);
