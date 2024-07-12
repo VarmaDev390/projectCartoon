@@ -28,20 +28,7 @@ function Mobile() {
 
   const handleSessionClick = (sessionId) => {
     setSessionId(sessionId);
-
-    // console.log("sessionId", sessionId);
-    const baseUrl = process.env.REACT_APP_API;
-    // Fetch the session messages from the backend
-    axios
-      .get(`${baseUrl}/chat/:${sessionId}`)
-      .then((response) => {
-        console.log("sessiondata", response.data);
-        setMessage(response.data);
-        navigate(`/chat/${sessionId}`);
-      })
-      .catch((error) => {
-        console.error("Error fetching session messages:", error);
-      });
+    navigate(`/chat/${sessionId}`);
   };
   return (
     <div className="absolute left-0 top-0 w-full z-50  bg-black/40 flex justify-between items-start">

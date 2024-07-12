@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { callExternalAPI } from "../utils/OpenAi";
 import { fetchSessions } from "./Helpers";
 
-function ChatContainer() {
+function ChatContainer({ message, setMessage }) {
   const {
     setShowSlide,
     showSlide,
@@ -16,8 +16,8 @@ function ChatContainer() {
     Mobile,
     chatValue,
     setChatValue,
-    setMessage,
-    message,
+    // setMessage,
+    // message,
     setSessionId,
     sessionId,
     setSessions,
@@ -123,7 +123,7 @@ function ChatContainer() {
         <HiOutlineMenuAlt2 fontSize={20} />
       </span>
       {/* chat section */}
-      <Chat />
+      <Chat message={message} />
       {/* chat input section */}
       <div className=" w-full  m-auto flex items-center justify-center flex-col gap-2 my-2">
         <span className="flex gap-2 items-center justify-center bg-gray-600 rounded-lg shadow-md w-[90%] lg:w-2/5 xl:w-1/2">
