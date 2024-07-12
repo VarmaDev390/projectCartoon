@@ -51,7 +51,7 @@ function Home() {
 
   return (
     <div className="flex w-screen relative">
-      <LeftNav />
+      <LeftNav message={message} setMessage={setMessage} />
       <ChatContainer message={message} setMessage={setMessage} />
       <span className="flex lg:hidden">
         <Mobile />

@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { fetchSessions } from "./Helpers.js";
 import axios from "axios";
 
-function Mobile() {
-  const { Mobile, setMobile, setSessionId, setMessage, setSessions, sessions } =
+function Mobile({ setMessage }) {
+  const { Mobile, setMobile, setSessionId, setSessions, sessions } =
     useContext(ContextApp);
   const navigate = useNavigate();
 
