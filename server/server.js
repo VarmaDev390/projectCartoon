@@ -509,6 +509,9 @@ cartoonApp.get("/chats", async (req, res) => {
     return res.status(500).json({ error: "Error in querying" });
   }
 });
+cartoonApp.get("/sampleEndpoint", (req, res) => {
+  res.json({ message: "All good" });
+});
 
 cartoonApp.listen(PORT, () =>
   console.log("Example app is listening on port 3001.")
