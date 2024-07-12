@@ -19,6 +19,7 @@ function App() {
       <Routes>
         <Route path="/chat/:sessionId" element={<Home />} />
         <Route path="/chat" element={<Home />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );
