@@ -64,6 +64,6 @@ npm run dev
 ```
 
 ## Usage
-**Start a New Chat**: From the main dashboard, select "New Chat" to initiate a conversation with the chatbot.
-**Ask About a Character**: Type in prompts like "Tell me about Mickey Mouse" or "What are Bugs Bunny's catchphrases?" to receive character-specific information.
-**Switch Between Chats**: Use the chat session manager to switch between ongoing conversations or revisit previous chats.
+**Start a New Chat**: From the main dashboard, select "New Chat" to initiate a conversation with the chatbot.</br>
+**Ask About a Character**: Type in prompts like "Tell me about Mickey Mouse" or "What are Bugs Bunny's catchphrases?" to receive character-specific information.</br>
+**Switch Between Chats**: Use the chat session manager to switch between ongoing conversations or revisit previous chats.</br>
