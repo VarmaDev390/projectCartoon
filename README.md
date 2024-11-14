@@ -29,7 +29,7 @@ git clone https://github.com/VarmaDev390/projectCartoon.git
 #### Web
 Navigate to the project directory:
 ```
-cd projectCartoon\web
+cd projectCartoon\client
 ```
 Install dependencies:
 ```
