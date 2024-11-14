@@ -15,10 +15,6 @@ The Cartoon Character Chat App is a conversational interface that lets users int
 **AI Integration**: OpenAI’s ChatGPT API, tailored to provide character-specific responses based on user prompts.</br>
 
 ## Getting Started
-### Prerequisites
-Node.js</br>
-ChatGPT API access</br>
-Git (for version control)</br>
 
 ### Installation
 Clone the repository:
