@@ -16,9 +16,9 @@ The Cartoon Character Chat App is a conversational interface that lets users int
 
 ## Getting Started
 ### Prerequisites
-Node.js (version X.X.X or above)
-ChatGPT API access
-Git (for version control)
+Node.js</br>
+ChatGPT API access</br>
+Git (for version control)</br>
 
 ### Installation
 Clone the repository:
