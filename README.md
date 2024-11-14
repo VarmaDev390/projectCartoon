@@ -22,4 +22,6 @@ Git (for version control)
 
 ### Installation
 Clone the repository:
-```git clone https://github.com/yourusername/cartoon-character-chat-app.git```
+```
+git clone https://github.com/VarmaDev390/projectCartoon.git
+```
