@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
+    "setUp": "node setupScript.js",
     "start": "node server.js"
   },
   "dependencies": {
