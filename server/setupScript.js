@@ -31,12 +31,7 @@ const initialScript = () => {
       )
     `;
 
-    const alterTable = `
-    ALTER TABLE chatData  
-MODIFY COLUMN sessionId varchar(255);  
-    `;
-
-    connection.query(alterTable, (err, results) => {
+    connection.query(createTableQuery, (err, results) => {
       if (err) {
         console.error("Error creating table: " + err.message);
       } else {
