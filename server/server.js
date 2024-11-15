@@ -38,7 +38,6 @@ const PORT = process.env.PORT || 3001;
 
 cartoonApp.use(bodyParser.json());
 cartoonApp.use(cors());
-// cartoonApp.use(cors({ origin: "http://localhost:3000" }));
 
 // cartoonApp.use("/", chatBotAI);
 
@@ -267,7 +266,7 @@ cartoonApp.get("/chat/:sessionId", async (req, res) => {
       if (result.length > 0 && result[0].chatHistory) {
         console.log("has history", result);
 
-        chatHistory = JSON.parse(result[0].chatHistory);
+        chatHistory = result[0].chatHistory;
         console.log("chatHistory", chatHistory);
 
         res.json(chatHistory);
@@ -426,7 +425,7 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
       if (result.length > 0 && result[0].chatHistory) {
         console.log("has history");
 
-        chatHistory = JSON.parse(result[0].chatHistory);
+        chatHistory = result[0].chatHistory;
         conversationObj = [
           {
             role: "user",
@@ -480,6 +479,7 @@ cartoonApp.post("/chat/:sessionId", async (req, res) => {
 });
 
 cartoonApp.get("/chats", async (req, res) => {
+  console.log("Inside /chats endpoint");
   try {
     const query =
       "SELECT sessionId, chatHistory FROM chatData ORDER BY updated_at DESC";
@@ -488,17 +488,24 @@ cartoonApp.get("/chats", async (req, res) => {
         console.error("Error fetching chat sessions:", err);
         return res.status(500).json({ error: "Error fetching chat sessions" });
       }
-      const sessions = results.map((row) => ({
-        sessionId: row.sessionId,
-        chatHistory: JSON.parse(row.chatHistory),
-      }));
+      const sessions = results.map((row) => {
+        let chatHistory;
+        // try {
+        //   chatHistory = JSON.parse(row.chatHistory);
+        // } catch (e) {
+        //   console.warn("Failed to parse chatHistory:", e.message);
+        chatHistory = row.chatHistory;
+        // }
+        return { sessionId: row.sessionId, chatHistory };
+      });
       res.json(sessions);
     });
   } catch (error) {
-    console.log("Error in querying", error);
+    console.error("Error in querying:", error);
     return res.status(500).json({ error: "Error in querying" });
   }
 });
+
 cartoonApp.get("/sampleEndpoint", (req, res) => {
   res.json({ message: "All good" });
 });
