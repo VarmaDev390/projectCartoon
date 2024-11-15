@@ -6,7 +6,7 @@ import { config } from "dotenv";
 import OpenAI from "openai";
 import { callGPT } from "./src/components/helpers.js";
 import { v4 as uuidv4 } from "uuid";
-import * as mysql from "mysql";
+import * as mysql from "mysql2";
 
 // setting the env variables
 const result = config();
