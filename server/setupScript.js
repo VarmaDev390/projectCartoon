@@ -1,11 +1,14 @@
 import * as mysql from "mysql";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const initialScript = () => {
   const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "project_cartoon",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   });
 
   pool.getConnection((err, connection) => {
