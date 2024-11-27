@@ -54,7 +54,7 @@ function Home() {
       <LeftNav message={message} setMessage={setMessage} />
       <ChatContainer message={message} setMessage={setMessage} />
       <span className="flex lg:hidden">
-        <Mobile />
+        <Mobile message={message} setMessage={setMessage} />
       </span>
     </div>
   );
