@@ -77,18 +77,36 @@ function Mobile({ setMessage }) {
           </span>
         </div> */}
         <div className="h-[80%] w-full p-2 flex items-start justify-start flex-col overflow-hidden overflow-y-auto text-sm scroll my-2">
-          {sessions.map((session) => (
-            <span
-              key={session.sessionId}
-              className="rounded w-full py-3 px-2 text-xs my-2 flex gap-2 items-center justify-between cursor-pointer hover:bg-gray-800 transition-all duration-300 overflow-hidden truncate whitespace-nowrap"
-              onClick={() => handleSessionClick(session.sessionId)}
-            >
-              <span className="flex gap-2 items-center justify-center text-base">
-                <FiMessageSquare />
-                <span className="text-sm">Session: {session.sessionId}</span>
+          {sessions.map((session) => {
+            // Extract the latest user message
+            const userMessages = session.chatHistory.filter(
+              (chat) => chat.role === "user"
+            );
+            const firstUserMessage =
+              userMessages.length > 0
+                ? userMessages[0].content
+                : "No messages yet";
+
+            // Truncate message if it's too long
+            const truncatedMessage =
+              firstUserMessage.length > 30
+                ? firstUserMessage.slice(0, 30) + "..."
+                : firstUserMessage;
+
+            return (
+              <span
+                key={session.sessionId}
+                className="rounded w-full py-3 px-2 text-xs my-2 flex gap-2 items-center justify-between cursor-pointer hover:bg-gray-800 transition-all duration-300 overflow-hidden truncate whitespace-nowrap"
+                onClick={() => handleSessionClick(session.sessionId)}
+              >
+                <span className="flex gap-2 items-center justify-center text-base">
+                  <FiMessageSquare />
+                  {/* Display the truncated user message */}
+                  <span className="text-sm">{truncatedMessage}</span>
+                </span>
               </span>
-            </span>
-          ))}
+            );
+          })}
         </div>
         {/* bottom section  */}
         <div className="w-full border-t border-gray-600 flex flex-col gap-2 items-center justify-center p-2">

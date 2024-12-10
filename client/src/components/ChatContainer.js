@@ -33,7 +33,8 @@ function ChatContainer({ message, setMessage }) {
 
   const handleSend = async () => {
     console.log("inside handlesend");
-    console.log("Session ID:", sessionId);
+    // console.log("Session ID:", sessionId);
+    console.log("chatValue:", chatValue);
 
     const text = chatValue;
     setChatValue("");
@@ -41,6 +42,7 @@ function ChatContainer({ message, setMessage }) {
     let url = "";
     let tempSessionId = "";
     const baseUrl = process.env.REACT_APP_API;
+    // new session or old session is decided here
     if (!sessionId) {
       url = `${baseUrl}/chat`;
     } else {
@@ -122,6 +124,38 @@ function ChatContainer({ message, setMessage }) {
       >
         <HiOutlineMenuAlt2 fontSize={20} />
       </span>
+
+      {/* Chat info and sample prompts when no messages */}
+      {message.length === 0 && (
+        <div className="flex flex-col items-center w-full text-center text-gray-300 p-4">
+          {/* Chat info text */}
+          <h2 className="text-lg font-semibold mb-4">Welcome to Chat</h2>
+          <p className="text-sm mb-6">
+            Start a conversation or try one of the prompts below to get started.
+            You can ask info about fictional characters. Response is limited to
+            few words for each question to reduce the token usage
+          </p>
+
+          {/* Sample prompts */}
+          <div className="flex flex-wrap justify-center gap-3">
+            {[
+              "Who is Naruto in the Naruto shippuden.",
+              "List a few good qualites about Superman.",
+            ].map((prompt, index) => (
+              <button
+                key={index}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition"
+                onClick={() => {
+                  setChatValue(prompt);
+                  // handleSend();
+                }}
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       {/* chat section */}
       <Chat message={message} />
       {/* chat input section */}
@@ -147,7 +181,7 @@ function ChatContainer({ message, setMessage }) {
         </span>
         <p className="lg:text-xs text-gray-400 text-center text-[10px]">
           Free Research Preview. ChatGPT may produce inaccurate information
-          about people, places, or facts. ChatGPT August 3 Version
+          about people, places, or facts. Using latest ChatGPT Version
         </p>
       </div>
     </div>
