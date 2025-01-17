@@ -24,13 +24,20 @@ import LeftNav from "../components/LeftNav";
 import ChatContainer from "../components/ChatContainer";
 import Mobile from "../components/Mobile";
 import { ContextApp } from "../utils/Context";
+import NoService from "../components/NoService";
 
 function Home() {
   const { sessionId } = useParams();
   const [message, setMessage] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
+
   // const { setSessionId } = useContext(ContextApp);
   const navigate = useNavigate();
   console.log("sessionId", sessionId);
+
+  // const toggleDialog = () => {
+  //   setIsDialogOpen((prev) => !prev);
+  // };
 
   // Fetch data when sessionId changes
   useEffect(() => {
@@ -51,6 +58,7 @@ function Home() {
 
   return (
     <div className="flex w-screen relative">
+      <NoService isOpen={isDialogOpen} />
       <LeftNav message={message} setMessage={setMessage} />
       <ChatContainer message={message} setMessage={setMessage} />
       <span className="flex lg:hidden">
